@@ -11,6 +11,10 @@ var config = {
   var pages = [];
   var numberPerPage = document.getElementById('displayState').value;
   var changeOrderByKey = document.getElementById('inputState').value
+  var pageList = new Array();
+  var currentPage = 1;
+  
+  var numberOfPages = 1; 
 
 document.addEventListener("DOMContentLoaded", function(event) {
     const db = firebase.database();
@@ -38,7 +42,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
             pages.push(obj);
             console.log("Adding to array");
         }
-newList(pages);
+//newList(pages);
+load(pages)
         
                    
         }).then(function(){
@@ -116,26 +121,68 @@ newList(pages);
             
         })
         .then(function(){
-/*
-            const del = document.querySelector('.movie-list');
-            del.addEventListener('click', function(event){
-               
-                // instantiate ui
-                const ui = new Ui();
-                
-                // delete movie
-                ui.updateMovie(event.target);
-            
-                // show message 
-            
-                //ui.showAlertRemove('Movie removed', 'alert-success');
-            
-            
-                event.preventDefault();
-            })
-
-
-*/
+            /*
+            var pageList = new Array();
+            var currentPage = 1;
+            var numberPerPage = document.getElementById('displayState').value;
+            var numberOfPages = 1; 
+                        function makeList(){
+                      pages;
+                    numberOfPages = getNumberOfPages();
+                  }
+          
+                  
+          
+            function getNumberOfPages() {
+              return Math.ceil(pages.length / numberPerPage);
+          }
+          function nextPage() {
+              currentPage += 1;
+              loadList();
+          }
+          function previousPage() {
+              currentPage -= 1;
+              loadList();
+          }
+          function firstPage() {
+              currentPage = 1;
+              loadList();
+          }
+          function lastPage() {
+              currentPage = numberOfPages;
+              loadList();
+          }
+          
+          function loadList() {
+              var begin = ((currentPage - 1) * numberPerPage);
+              var end = begin + numberPerPage;
+          
+              pageList = pages.slice(begin, end);
+              drawList();    // draws out our data
+              check();         // determines the states of the pagination buttons
+          }
+          function drawList() {
+              document.querySelector('.movie-list').innerHTML = "";
+              
+              for (r = 0; r < pageList.length; r++) {
+                  document.querySelector('.movie-list').innerHTML += `
+                  <td>${pageList[r].title}</td>
+                  <td>${pageList[r].director}</td>
+                  <td>${pageList[r].date}</td>
+                  <td><a class="edit"><i class="fa fa-pencil-square-o fa-lg text-white" title="Edit"></i></a></td>
+                  <td><a class="delete"><i class="fa fa-trash fa-lg text-white" title="Delete"></i></a></td>
+                  
+                  `;
+                  console.log(pageList[r]);
+              }
+          }
+          function check() {
+              document.getElementById("next").disabled = currentPage == numberOfPages ? true : false;
+              document.getElementById("previous").disabled = currentPage == 1 ? true : false;
+              document.getElementById("first").disabled = currentPage == 1 ? true : false;
+              document.getElementById("last").disabled = currentPage == numberOfPages ? true : false;
+          }
+          */
         })
         .then(function(){
             // event listener for delete
@@ -181,8 +228,69 @@ del.addEventListener('click', function(event){
     // end of domloadcontent    
   });
 
+  function makeList(event){
+      pages = event;
+      numberOfPages = getNumberOfPages();
+  }
+  function load(event){
+    makeList(event);
+    loadList();
+ 
+}
+
+
+
+function getNumberOfPages() {
+return Math.ceil(pages.length / numberPerPage);
+}
+function nextPage() {
+currentPage += 1;
+loadList();
+}
+function previousPage() {
+currentPage -= 1;
+loadList();
+}
+function firstPage() {
+currentPage = 1;
+loadList();
+}
+function lastPage() {
+currentPage = numberOfPages;
+loadList();
+}
+
+function loadList() {
+var begin = ((currentPage - 1) * numberPerPage);
+var end = begin + numberPerPage;
+
+pageList = pages.slice(begin, end);
+drawList();    // draws out our data
+check();         // determines the states of the pagination buttons
+}
+function drawList() {
+document.querySelector('.movie-list').innerHTML = "";
+
+for (r = 0; r < pageList.length; r++) {
+document.querySelector('.movie-list').innerHTML += `
+<td>${pageList[r].title}</td>
+<td>${pageList[r].director}</td>
+<td>${pageList[r].date}</td>
+<td><a href="#" class="edit" data-toggle="modal" data-target="#updateMovieModal"><i class="fa fa-pencil-square-o fa-lg text-white" title="Edit"></i></a></td>
+        <td><a href="#" class="delete"><i class="fa fa-trash fa-lg text-white" title="Delete"></i></a></td>
+
+`;
+console.log(pageList[r]);
+}
+}
+function check() {
+document.getElementById("next").disabled = currentPage == numberOfPages ? true : false;
+document.getElementById("previous").disabled = currentPage == 1 ? true : false;
+document.getElementById("first").disabled = currentPage == 1 ? true : false;
+document.getElementById("last").disabled = currentPage == numberOfPages ? true : false;
+}
 function newList(event){
-      //console.log(event)
+      console.log(event)
       
       const displayList = document.querySelector('.movie-list')
       displayList.innerHTML = "";
