@@ -58,6 +58,10 @@ newList(pages);
                 const newOrder = pages;
                 if(newSort === "latest"){
                     console.log(newSort)
+                    console.log(pages);
+                    newOrder.sort(function(){
+                        return 0;
+                    })
                 newList(pages);
                 // not working yet
                 } else if(newSort === "title"){
@@ -145,26 +149,7 @@ del.addEventListener('click', function(event){
     ui.deleteMovie(event.target);
     ui.updateMovie(event.target);
 
-    document.getElementById('update-movie-form').addEventListener('submit', function(event){
-        console.log(event.target)
-        const updatetitle = document.getElementById('updateMvieTitle').value,
-            updatedirector = document.getElementById('updateMovieDirector').value,
-            updatedate = document.getElementById('updateMovieDate').value;
-            
-        //validate
-        if(title === '' || director === '' || date === ''){
-            // error alert
-            ui.showAlert('Cannot be blank ', 'alert-danger')
-        } else {
-            ui.updatedate(event.target)
-            // show success
-            ui.showAlert('Movie updated', 'alert-success');
-            // clear fields
-            ui.clearUpdateFields();
-        }
-    
-        event.preventDefault();
-    })
+   
     // show message 
 
     //ui.showAlertRemove('Movie removed', 'alert-success');
@@ -187,6 +172,7 @@ del.addEventListener('click', function(event){
     firebase.database().ref('/').on('child_changed', function(snapshot) {
         let obj = snapshot.val();
         console.log('child_changed', obj);
+        location.reload();
     })
     firebase.database().ref('/').on('child_removed', function(snapshot) {
         let obj = snapshot.val();
@@ -223,7 +209,7 @@ function newList(event){
           //console.log(event[i]);
           }  
     }
-        if(changeOrderByKey === "latest")
+        
              return displayList;
 }
 
@@ -281,8 +267,25 @@ class Ui {
     // add text
     div.appendChild(document.createTextNode(message));
     // get parent
-    const container = document.querySelector('.modal-body');
+    const container = document.querySelector('#modal-body-add');
     const form = document.querySelector('#movie-form');
+    // insert alert
+    container.insertBefore(div, form);
+    // timeout after 3s
+    setTimeout(function(){
+        document.querySelector('.alert').remove();
+    }, 3000);
+    }
+    showUpdateAlert(message, className){
+        // create div
+    const div = document.createElement('div');
+    // add classes
+    div.className = `alert ${className}`;
+    // add text
+    div.appendChild(document.createTextNode(message));
+    // get parent
+    const container = document.querySelector('#modal-body-update');
+    const form = document.querySelector('#update-movie-form');
     // insert alert
     container.insertBefore(div, form);
     // timeout after 3s
@@ -320,9 +323,59 @@ class Ui {
         console.log(target)
         if(target.parentElement.classList.contains('edit')){  
         const keyId = target.parentElement.parentElement.parentElement.id;
-        console.log(target.parentElement.parentElement);
-        console.log(keyId)
+        const keyTitle = target.parentElement.parentElement.parentElement.firstElementChild.innerText;
+        const keyDirector = target.parentElement.parentElement.parentElement.children[1].innerText;
+        const keyDate = target.parentElement.parentElement.parentElement.children[2].innerText
+        
 
+        document.getElementById('updateMovieTitle').value = keyTitle;
+        document.getElementById('updateMovieDirector').value = keyDirector;
+        document.getElementById('updateMovieDate').value = keyDate;
+        
+        document.getElementById('update-movie-form').addEventListener('submit', function(event){
+
+
+
+            const updatetitle = document.getElementById('updateMovieTitle').value,
+                updatedirector = document.getElementById('updateMovieDirector').value,
+                updatedate = document.getElementById('updateMovieDate').value;
+
+                let updateMovie = {};
+                
+                updateMovie["title"] = updatetitle;
+                updateMovie["id"] = keyId;
+                updateMovie["director"] = updatedirector;
+                updateMovie["date"] = updatedate;
+
+                
+                const ui = new Ui();
+            //validate
+            if(updatetitle === '' || updatedirector === '' || updatedate === ''){
+                // error alert
+                ui.showUpdateAlert('Cannot be blank ', 'alert-danger')
+            } else {
+
+
+                firebase.database().ref('/'+keyId).update(updateMovie);
+                // show success
+                ui.showUpdateAlert('Movie updated', 'alert-success');
+                // clear fields
+                pages.forEach(function(obj) {
+                                        
+                    if (obj.id === keyId) {
+                        
+                        obj["title"] = updatetitle;
+                        obj["id"] = keyId;
+                        obj["director"] = updatedirector;
+                        obj["date"] = updatedate;
+                    }
+                    
+                });
+            }
+        
+            event.preventDefault();
+        })
+        
        // target.parentElement.parentElement.parentElement.remove();
             
            // const db = firebase.database();
