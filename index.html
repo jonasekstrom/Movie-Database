@@ -24,9 +24,7 @@
                       <li class="nav-item px-2">
                         <a href="#" class="nav-link">MessageBoard</a>
                       </li>
-                      <li class="nav-item px-2">
-                        <a href="#" class="nav-link">Categories</a>
-                      </li>
+
                       
                     </ul>
             
@@ -66,7 +64,7 @@
                <div class="container">
                  <div class="row">
                   <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search...">
+                    <input class="form-control" type="text" name="filter" id="filter" placeholder="Offline filter isnt operational...">
                     
                 </div>
                    </div>
@@ -77,9 +75,9 @@
               <section class="mt-3">
                 <div class="container">
                   <div class="row">
-                    <div class="form-group col-md-2 bg-dark text-white">
-                      <label for="inputState">Sort By:</label>
-                      <select id="inputState" class="form-control bg-dark text-white ml-2">
+                    <div class="form-group col-md-2 bg-dark text-white form-horizontal">
+                      <label for="inputState" class="control-label">Sort By:</label>
+                      <select id="inputState" class="form-control bg-dark text-white ml-2 d-block-xs">
                         <option value="latest">Latest Added</option>
                         <option value="title">Movie Title</option>
                         <option value"director">Director</option>
@@ -90,12 +88,11 @@
                       <button class="btn btn-dark text-white" id="changeOrder">Ascend <i class="fa fa-arrow-circle-o-up fa-lg"></i>
                       </button>
                     </div>
-                    <div class="input-group col-md-2 bg-dark text-white">
-                      <label for="displayState"><i class="fa fa-desktop fa-lg"></i> Display per page: </label>
+                    <div class="form-group col-md-2 bg-dark text-white">
+                      <label for="displayState" class="control-label"><i class="fa fa-desktop fa-lg"></i> Display per page:</label>
                       <select id="displayState" class="form-control bg-dark text-white ml-2">
                         <option value="12">12</option>
                         <option value="24">24</option>
-                        <option value"36">36</option>
                       </select>
                     </div>
                   </div>
@@ -116,7 +113,7 @@
                 </thead>
                 <tbody class="movie-list"></tbody>
               </table>
-              <div id="movie"></div>
+             
  
         </div>
       </section>
@@ -169,9 +166,7 @@
                     <div>
                         <input type="submit" value="Add Movie" class="btn btn-success">
                       </div>
-                      <!--
-                    <button class="btn btn-primary" type="submit">Submit</button>
-                      -->
+
                 </form>
                
             </div>
@@ -213,9 +208,7 @@
                     <div>
                         <input type="submit" value="Update Movie" class="btn btn-success">
                       </div>
-                      <!--
-                    <button class="btn btn-primary" type="submit">Submit</button>
-                      -->
+
                 </form>
                
             </div>
