@@ -9,7 +9,7 @@ var config = {
   firebase.initializeApp(config);
 
   var pages = [];
-  var numberPerPage = document.getElementById('displayState').value;
+  
   var changeOrderByKey = document.getElementById('inputState').value
   var pageList = new Array();
   var currentPage = 1;
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     const db = firebase.database();
     db.ref('/')
     .once('value').then(function(snapshot) {
-        console.log('On value: hämtar hela databasen.');
+        //console.log('On value: hämtar hela databasen.');
         
         let data = snapshot.val();
         //console.log(data);
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             obj["director"] = r.director;
             obj["date"] = r.date;
             pages.push(obj);
-            console.log("Adding to array");
+            //console.log("Adding to array");
         }
 //newList(pages);
 load(pages)
@@ -48,10 +48,7 @@ load(pages)
                    
         }).then(function(){
             
-            const viewList = document.getElementById('displayState');
-            viewList.addEventListener('change', function(event){
-                newList(pages);
-            });
+
             
         })
         .then(function(){
@@ -67,7 +64,8 @@ load(pages)
                     newOrder.sort(function(){
                         return 0;
                     })
-                newList(pages);
+                //newList(pages);
+                load(pages)
                 // not working yet
                 } else if(newSort === "title"){
                     
@@ -77,7 +75,8 @@ load(pages)
                         
                         return 0;
                       });
-                    newList(newOrder)
+                   // newList(newOrder)
+                   load(pages)
                 }else if(newSort === "Director"){
                     
                     newOrder.sort(function(a,b){
@@ -86,12 +85,14 @@ load(pages)
                        
                         return 0;
                       });
-                    newList(newOrder)
+                    //newList(newOrder)
+                    load(pages)
                 } else if(newSort === "Date of Premiere"){
                     newOrder.sort(function(a,b){
                        return a.date - b.date;
                       });
-                    newList(newOrder)
+                    //newList(newOrder)
+                    load(pages)
                 }
 
             });
@@ -106,12 +107,14 @@ load(pages)
                     
                 pages.reverse();
                 document.getElementById('changeOrder').innerHTML = `Descend <i class="fa fa-arrow-circle-o-down fa-lg"></i>`;
-                newList(pages);
+                //newList(pages);
+                load(pages)
                 }else if(ascend === "Descend "){
                     
                     pages.reverse();
                     document.getElementById('changeOrder').innerHTML = `Ascend <i class="fa fa-arrow-circle-o-up fa-lg"></i>`;
-                    newList(pages);
+                    //newList(pages);
+                    load(pages)
                 }
 
                 
@@ -119,70 +122,6 @@ load(pages)
 
             })
             
-        })
-        .then(function(){
-            /*
-            var pageList = new Array();
-            var currentPage = 1;
-            var numberPerPage = document.getElementById('displayState').value;
-            var numberOfPages = 1; 
-                        function makeList(){
-                      pages;
-                    numberOfPages = getNumberOfPages();
-                  }
-          
-                  
-          
-            function getNumberOfPages() {
-              return Math.ceil(pages.length / numberPerPage);
-          }
-          function nextPage() {
-              currentPage += 1;
-              loadList();
-          }
-          function previousPage() {
-              currentPage -= 1;
-              loadList();
-          }
-          function firstPage() {
-              currentPage = 1;
-              loadList();
-          }
-          function lastPage() {
-              currentPage = numberOfPages;
-              loadList();
-          }
-          
-          function loadList() {
-              var begin = ((currentPage - 1) * numberPerPage);
-              var end = begin + numberPerPage;
-          
-              pageList = pages.slice(begin, end);
-              drawList();    // draws out our data
-              check();         // determines the states of the pagination buttons
-          }
-          function drawList() {
-              document.querySelector('.movie-list').innerHTML = "";
-              
-              for (r = 0; r < pageList.length; r++) {
-                  document.querySelector('.movie-list').innerHTML += `
-                  <td>${pageList[r].title}</td>
-                  <td>${pageList[r].director}</td>
-                  <td>${pageList[r].date}</td>
-                  <td><a class="edit"><i class="fa fa-pencil-square-o fa-lg text-white" title="Edit"></i></a></td>
-                  <td><a class="delete"><i class="fa fa-trash fa-lg text-white" title="Delete"></i></a></td>
-                  
-                  `;
-                  console.log(pageList[r]);
-              }
-          }
-          function check() {
-              document.getElementById("next").disabled = currentPage == numberOfPages ? true : false;
-              document.getElementById("previous").disabled = currentPage == 1 ? true : false;
-              document.getElementById("first").disabled = currentPage == 1 ? true : false;
-              document.getElementById("last").disabled = currentPage == numberOfPages ? true : false;
-          }
-          */
         })
         .then(function(){
             // event listener for delete
@@ -194,19 +133,16 @@ del.addEventListener('click', function(event){
     
     // delete movie
     ui.deleteMovie(event.target);
+    // update movie
     ui.updateMovie(event.target);
 
-   
-    // show message 
-
-    //ui.showAlertRemove('Movie removed', 'alert-success');
 
 
     event.preventDefault();
 })
 
         })
-        
+     
      // once/value
      
     firebase.database().ref('/').on('child_added', function(snapshot) {
@@ -218,30 +154,39 @@ del.addEventListener('click', function(event){
     })
     firebase.database().ref('/').on('child_changed', function(snapshot) {
         let obj = snapshot.val();
-        console.log('child_changed', obj);
-        location.reload();
+        //console.log('child_changed', obj);
+   
     })
     firebase.database().ref('/').on('child_removed', function(snapshot) {
         let obj = snapshot.val();
-        console.log('child_removed', obj);
+        //console.log('child_removed', obj);
+        location.reload();
     })
     // end of domloadcontent    
   });
-
-  function makeList(event){
-      pages = event;
-      numberOfPages = getNumberOfPages();
-  }
-  function load(event){
-    makeList(event);
-    loadList();
+  var numberPerPages  = document.getElementById('displayState').value;
+  const viewList = document.getElementById('displayState');
+  viewList.addEventListener('change', function(e){
+    numberPerPages  = document.getElementById('displayState').value;
  
+      console.log(numberPerPages)
+      load(pages)
+  });
+  function makeList(event){
+    pages = event;
+    numberOfPages = getNumberOfPages();
+}
+function load(event){
+  makeList(event);
+  loadList();
+
 }
 
 
 
 function getNumberOfPages() {
-return Math.ceil(pages.length / numberPerPage);
+  //console.log(numberPerPages)
+return Math.ceil(pages.length / numberPerPages);
 }
 function nextPage() {
 currentPage += 1;
@@ -261,26 +206,29 @@ loadList();
 }
 
 function loadList() {
-var begin = ((currentPage - 1) * numberPerPage);
-var end = begin + numberPerPage;
+var begin = ((currentPage - 1) * numberPerPages);
+var end = begin + numberPerPages;
 
 pageList = pages.slice(begin, end);
 drawList();    // draws out our data
 check();         // determines the states of the pagination buttons
 }
 function drawList() {
-document.querySelector('.movie-list').innerHTML = "";
-
+  const displayList = document.querySelector('.movie-list');
+      displayList.innerHTML = ""
 for (r = 0; r < pageList.length; r++) {
-document.querySelector('.movie-list').innerHTML += `
+  const displayRow = document.createElement('tr');
+      displayRow.id = pageList[r].id;
+displayRow.innerHTML += `
 <td>${pageList[r].title}</td>
 <td>${pageList[r].director}</td>
 <td>${pageList[r].date}</td>
 <td><a href="#" class="edit" data-toggle="modal" data-target="#updateMovieModal"><i class="fa fa-pencil-square-o fa-lg text-white" title="Edit"></i></a></td>
-        <td><a href="#" class="delete"><i class="fa fa-trash fa-lg text-white" title="Delete"></i></a></td>
+      <td><a href="#" class="delete"><i class="fa fa-trash fa-lg text-white" title="Delete"></i></a></td>
 
 `;
-console.log(pageList[r]);
+displayList.appendChild(displayRow);
+
 }
 }
 function check() {
@@ -289,6 +237,7 @@ document.getElementById("previous").disabled = currentPage == 1 ? true : false;
 document.getElementById("first").disabled = currentPage == 1 ? true : false;
 document.getElementById("last").disabled = currentPage == numberOfPages ? true : false;
 }
+    
 function newList(event){
       console.log(event)
       
@@ -296,7 +245,7 @@ function newList(event){
       displayList.innerHTML = "";
       //console.log(event[1]);
       changeOrderByKey = document.getElementById('inputState').value;
-      numberPerPage = document.getElementById('displayState').value;
+      numberPerPages = document.getElementById('displayState').value;
       console.log(numberPerPage)
       for (let i = 0; i < numberPerPage; i++){
           if(event[i] === undefined){
@@ -353,17 +302,17 @@ class Ui {
    
        // console.log(movie);
         movie.id = "id";
-        console.log('Adding to database...');
+        //console.log('Adding to database...');
         //firebase.database().ref('/').push(movie);
         const key = firebase.database().ref().push().key;
         
         movie.id = key;
         firebase.database().ref('/'+key).update(movie);
        // console.log(movie);
-        console.log('Finished adding to database.');
+        //console.log('Finished adding to database.');
         // add to array
-        pages.push(movie);
-        console.log(pages.length)
+        //pages.push(movie);
+        //console.log(pages.length)
 
     }
 
@@ -401,26 +350,12 @@ class Ui {
         document.querySelector('.alert').remove();
     }, 3000);
     }
-/*
-    showAlertRemove(message, className){
-        // create div
-    const div = document.getElementById('remove');
-    // add classes
-    div.className = `alert ${className}`;
-    // add text
-    div.appendChild(document.createTextNode(message));
-    
-    // timeout after 3s
-    setTimeout(function(){
-        document.querySelector('.alert').remove();
-    }, 3000);
-    }
-*/
+
     deleteMovie(target){
         if(target.parentElement.classList.contains('delete')){  
         const keyId = target.parentElement.parentElement.parentElement.id;
-        console.log(target.parentElement.parentElement);
-        console.log(keyId)   
+        //console.log(target.parentElement.parentElement);
+        //console.log(keyId)   
         target.parentElement.parentElement.parentElement.remove();
             
             const db = firebase.database();
@@ -428,13 +363,13 @@ class Ui {
         }
     }
     updateMovie(target){
-        console.log(target)
+        //console.log(target)
         if(target.parentElement.classList.contains('edit')){  
         const keyId = target.parentElement.parentElement.parentElement.id;
         const keyTitle = target.parentElement.parentElement.parentElement.firstElementChild.innerText;
         const keyDirector = target.parentElement.parentElement.parentElement.children[1].innerText;
         const keyDate = target.parentElement.parentElement.parentElement.children[2].innerText
-        
+        console.log(target.parentElement.parentElement.parentElement)
 
         document.getElementById('updateMovieTitle').value = keyTitle;
         document.getElementById('updateMovieDirector').value = keyDirector;
@@ -463,7 +398,7 @@ class Ui {
                 ui.showUpdateAlert('Cannot be blank ', 'alert-danger')
             } else {
 
-
+            
                 firebase.database().ref('/'+keyId).update(updateMovie);
                 // show success
                 ui.showUpdateAlert('Movie updated', 'alert-success');
@@ -479,16 +414,13 @@ class Ui {
                     }
                     
                 });
+                load(pages)
             }
         
             event.preventDefault();
         })
         
-       // target.parentElement.parentElement.parentElement.remove();
-            
-           // const db = firebase.database();
-             //  db.ref(`/${keyId}`).remove();
-        }
+      }
     }
 
     clearFields(){
@@ -526,5 +458,4 @@ document.getElementById('movie-form').addEventListener('submit', function(event)
 
     event.preventDefault();
 });
-
 
