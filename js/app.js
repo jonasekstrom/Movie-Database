@@ -223,8 +223,8 @@ displayRow.innerHTML += `
 <td>${pageList[r].title}</td>
 <td>${pageList[r].director}</td>
 <td>${pageList[r].date}</td>
-<td><a href="#" class="edit" data-toggle="modal" data-target="#updateMovieModal"><i class="fa fa-pencil-square-o fa-lg text-white" title="Edit"></i></a></td>
-      <td><a href="#" class="delete"><i class="fa fa-trash fa-lg text-white" title="Delete"></i></a></td>
+<td><a href="#" class="edit" data-toggle="modal" data-target="#updateMovieModal"><i class="fa fa-pencil-square-o fa-lg text-warning" title="Edit"></i></a></td>
+      <td><a href="#" class="delete"><i class="fa fa-trash fa-lg text-danger" title="Delete"></i></a></td>
 
 `;
 displayList.appendChild(displayRow);
@@ -281,8 +281,8 @@ function newList(event){
 <td>${r.title}</td>
 <td>${r.director}</td>
 <td>${r.date}</td>
-<td><a class="edit"><i class="fa fa-pencil-square-o fa-lg text-white" title="Edit"></i></a></td>
-        <td><a class="delete"><i class="fa fa-trash fa-lg text-white" title="Delete"></i></a></td>
+<td><a href="#" class="edit" data-toggle="modal" data-target="#updateMovieModal"><i class="fa fa-pencil-square-o fa-lg text-warning" title="Edit"></i></a></td>
+      <td><a href="#" class="delete"><i class="fa fa-trash fa-lg text-danger" title="Delete"></i></a></td>
 `;
 list.appendChild(row);
 return list;
